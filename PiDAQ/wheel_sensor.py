@@ -5,10 +5,12 @@ import time
 
 HALL_PIN = 3
 DEBOUNCE_DELAY = 0.027
+TIMEOUT = 1.0
 
 pulse_interval = 0
 rising_time = 0
 falling_time = 0
+pulse_count = 0
 
 UDP_IP = "10.74.1.33"
 UDP_PORT = 5005
@@ -16,7 +18,7 @@ UDP_PORT = 5005
 sock = None
 
 def hall_rising(channel):
-	global pulse_interval, rising_time, falling_time
+	global pulse_interval, rising_time, falling_time, pulse_count
 
 	now = time.time()
 
@@ -24,6 +26,8 @@ def hall_rising(channel):
 		pulse_interval = now - rising_time
 		rising_time = now
 		falling_time = now
+		pulse_count += 1
+
 
 def setup():
 	global sock
@@ -37,15 +41,27 @@ def setup():
 
 
 def loop():
-	global pulse_interval
+	global pulse_interval, rising_time, pulse_count
+	last_count = 0
 
 	while True:
-		if pulse_interval > 0:
+		now = time.time()
+
+		if (now - rising_time) > TIMEOUT:
+			rpm = 0
+		elif pulse_interval > 0:
 			rpm = 60.0 / pulse_interval
-			message = f"RPM: {rpm:.2f}"
-			sock.sendto(message.encode(), (UDP_IP, UDP_PORT))
-			print(f"Sent: {message}")
-		time.sleep(0.1)
+		else:
+			rpm = 0
+
+		pulses_this_second = pulse_count - last_count
+		last_count = pulse_count
+
+		message = f"RPM: {rpm:.2f} | Pulses/sec: {pulses_this_second}"
+		sock.sendto(message.encode(), (UDP_IP, UDP_PORT))
+		print(f"Sent: {message}")
+
+		time.sleep(1.0)
 
 if __name__ == "__main__":
 	try:
