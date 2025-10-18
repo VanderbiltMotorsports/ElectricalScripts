@@ -13,9 +13,7 @@ falling_time = 0
 UDP_IP = "10.74.1.33"
 UDP_PORT = 5005
 
-# make wheel speed sensor code, check button code to see how to send 
-# data over UDP
-
+sock = None
 
 def hall_rising(channel):
 	global pulse_interval, rising_time, falling_time
@@ -28,6 +26,7 @@ def hall_rising(channel):
 		falling_time = now
 
 def setup():
+	global sock
 	GPIO.setmode(GPIO.BOARD)
 	GPIO.setup(HALL_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
@@ -42,8 +41,8 @@ def loop():
 
 	while True:
 		if pulse_interval > 0:
-			rpm = 60.0 / pulse_intereval
-			message = f"RPM: {rpm:2f}"
+			rpm = 60.0 / pulse_interval
+			message = f"RPM: {rpm:.2f}"
 			sock.sendto(message.encode(), (UDP_IP, UDP_PORT))
 			print(f"Sent: {message}")
 		time.sleep(0.1)
@@ -52,8 +51,9 @@ if __name__ == "__main__":
 	try:
 		setup()
 		loop()
-	except KeyobardInterrupt:
+	except KeyboardInterrupt:
 		print("\nExiting...")
 	finally:
 		GPIO.cleanup()
-		sock.close()
+		if sock:
+			sock.close()
