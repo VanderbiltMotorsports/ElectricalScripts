@@ -18,7 +18,7 @@ last_valid_time = 0
 pulse_count = 0
 last_rpm_time = 0
 
-UDP_IP = "10.74.1.33"
+UDP_IP = "10.74.255.93"
 UDP_PORT = 5005
 
 sock = None
