@@ -79,8 +79,10 @@ def setup():
     
     GPIO.setup(HALL_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     
-    # Remove hardware bouncetime - we'll handle it in software
-    GPIO.add_event_detect(HALL_PIN, GPIO.FALLING, callback=hall_falling, bouncetime=0)
+    # Use BOTH hardware and software debouncing
+    hardware_bounce_ms = int(DEBOUNCE_DELAY * 1000)  # Convert to milliseconds
+    GPIO.add_event_detect(HALL_PIN, GPIO.FALLING, callback=hall_falling, 
+                          bouncetime=hardware_bounce_ms)
     
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     print(f"Sending to {UDP_IP}:{UDP_PORT}")
