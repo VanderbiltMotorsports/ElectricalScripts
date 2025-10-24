@@ -1,0 +1,1 @@
+This the code for the kills switch. Right now, it just checks for when the key 'k' is pressed on keyboard and sends a 'KILL' signal to the reciever. It's untested right now but hopefully it works. 
