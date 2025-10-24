@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 import time
 
 HALL_PIN = 3
-DEBOUNCE_DELAY = 0.027
+DEBOUNCE_DELAY = 0.15
 TIMEOUT = 1.0
 
 pulse_interval = 0
@@ -12,7 +12,7 @@ rising_time = 0
 falling_time = 0
 pulse_count = 0
 
-UDP_IP = "10.74.1.33"
+UDP_IP = "10.74.202.131"
 UDP_PORT = 5005
 
 sock = None

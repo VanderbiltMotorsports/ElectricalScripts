@@ -7,11 +7,11 @@ from collections import deque
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 HALL_PIN = 17
-DEBOUNCE_DELAY = 0.200          # <- MUCH higher (200ms)
+DEBOUNCE_DELAY = 0.05          # <- MUCH higher (200ms)
 TIMEOUT = 5.0
-MIN_VALID_INTERVAL = 0.200      # <- reject anything < 200ms (300 RPM max)
+MIN_VALID_INTERVAL = 0.020      # <- reject anything < 200ms (300 RPM max)
 MAX_VALID_INTERVAL = 10.0       # <- allow very low RPM
-AVERAGE_WINDOW = 3              # <- smaller window for debugging
+AVERAGE_WINDOW = 1              # <- smaller window for debugging
 
 UDP_IP = "10.74.255.93"
 UDP_PORT = 5005
