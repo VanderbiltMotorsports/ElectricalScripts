@@ -2,7 +2,7 @@ import socket
 from pynput import keyboard
 
 HOST = "127.0.0.1" # need to change to ras pi id
-port = 5005
+port = 5000
 
 key_pressed = False
 
