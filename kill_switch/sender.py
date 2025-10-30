@@ -22,6 +22,13 @@ def on_press(key):
 
         except AttributeError:
             pass
+def on_release(key):
+    global key_pressed
+    try:
+        if (key.char == 'k' and key_pressed):
+            key_pressed = False
+    except AttributeError:
+        pass
 
-with keyboard.Listener(on_press=on_press) as listener:
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     listener.join()
