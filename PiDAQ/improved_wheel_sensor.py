@@ -30,6 +30,7 @@ def hall_falling(channel):
     now = time.perf_counter()
     raw_pulse_count += 1  # Count every interrupt
     
+    
     # Extended bounce filter - wait longer and check multiple times
     time.sleep(0.005)  # 5ms wait
     if GPIO.input(channel) != GPIO.LOW:
