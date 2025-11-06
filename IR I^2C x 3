@@ -1,0 +1,80 @@
+#include <Wire.h>
+#include <Adafruit_MLX90614.h>
+
+#define TCA_ADDR 0x70
+#define MLX_ADDR 0x5A
+
+// Three independent MLX90614 objects
+Adafruit_MLX90614 mlx0 = Adafruit_MLX90614();
+Adafruit_MLX90614 mlx1 = Adafruit_MLX90614();
+Adafruit_MLX90614 mlx2 = Adafruit_MLX90614();
+
+// Select a specific TCA9548A channel (0–7)
+void tcaSelect(uint8_t channel) {
+  Wire.beginTransmission(TCA_ADDR);
+  Wire.write(1 << channel);
+  Wire.endTransmission();
+  delay(10); // settle time after switching
+}
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+
+  Serial.println("TCA9548A + MLX90614 Triple-Sensor Setup");
+  Serial.println("--------------------------------------");
+
+  // --- Initialize each sensor ---
+  for (uint8_t ch = 0; ch < 3; ch++) {
+    tcaSelect(ch);
+    delay(50); // allow sensor to wake
+    bool ok = false;
+    switch (ch) {
+      case 0: ok = mlx0.begin(MLX_ADDR); break;
+      case 1: ok = mlx1.begin(MLX_ADDR); break;
+      case 2: ok = mlx2.begin(MLX_ADDR); break;
+    }
+    if (ok) {
+      Serial.print("✅ Sensor initialized on channel ");
+      Serial.println(ch);
+    } else {
+      Serial.print("❌ No response from channel ");
+      Serial.println(ch);
+    }
+  }
+  Serial.println();
+}
+
+void loop() {
+  float amb[3], obj[3];
+
+  // --- Read all three sensors ---
+  for (uint8_t ch = 0; ch < 3; ch++) {
+    tcaSelect(ch);
+    delay(10);
+    switch (ch) {
+      case 0:
+        amb[ch] = mlx0.readAmbientTempC();
+        obj[ch] = mlx0.readObjectTempC();
+        break;
+      case 1:
+        amb[ch] = mlx1.readAmbientTempC();
+        obj[ch] = mlx1.readObjectTempC();
+        break;
+      case 2:
+        amb[ch] = mlx2.readAmbientTempC();
+        obj[ch] = mlx2.readObjectTempC();
+        break;
+    }
+  }
+
+  // --- Display results ---
+  for (uint8_t ch = 0; ch < 3; ch++) {
+    Serial.print("CH"); Serial.print(ch);
+    Serial.print(" → Obj: "); Serial.print(obj[ch], 2);
+    Serial.print("°C  Amb: "); Serial.print(amb[ch], 2);
+    Serial.print("°C\t");
+  }
+  Serial.println();
+  delay(1000);
+}
