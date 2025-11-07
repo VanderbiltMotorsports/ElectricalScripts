@@ -260,8 +260,11 @@ def get_rpm4():
 def setup():
     global sock, last_valid_time1, last_valid_time2, last_valid_time3, last_valid_time4, last_rpm_time1, last_rpm_time2, last_rpm_time3, last_rpm_time4
     
-    GPIO.setup(HALL_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    
+    GPIO.setup(HALL_PIN1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(HALL_PIN2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(HALL_PIN3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(HALL_PIN4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
     # Use BOTH hardware and software debouncing
     hardware_bounce_ms = int(DEBOUNCE_DELAY * 1000)  # Convert to milliseconds
     GPIO.add_event_detect(HALL_PIN1, GPIO.FALLING, callback=hall_falling1, 
